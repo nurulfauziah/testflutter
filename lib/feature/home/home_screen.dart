@@ -2,47 +2,12 @@
 
 import 'dart:async';
 import 'dart:developer';
-
 import 'package:battery_plus/battery_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
-
-// class HomeScreen extends StatefulWidget {
-//   const HomeScreen({Key? key}) : super(key: key);
-
-//   @override
-//   State<HomeScreen> createState() => _HomeScreenState();
-// }
-
-// class _HomeScreenState extends State<HomeScreen> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text("Dashboard"),
-//         actions: const [],
-//       ),
-//       body: SingleChildScrollView(
-//         child: Container(
-//           padding: const EdgeInsets.all(10.0),
-//           child: Column(
-//             children: [
-//               Row(
-//                 children: [Text(DateFormat('hh:mm:ss').format(DateTime.now()))],
-//               )
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// import 'dart:async';
-// import 'package:flutter/material.dart';
-// import 'package:intl/intl.dart';
+import 'package:testflutter/feature/sensor.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
@@ -57,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String? _tanggal;
   String? _currentAddress = '';
   Position? _currentPosition;
-  String? batteryLevelStr;
+  int? batteryLevelStr;
 
   final Battery _battery = Battery();
 
@@ -149,48 +114,110 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> getBaterry() async {
     final batteryLevel = await _battery.batteryLevel;
-    batteryLevelStr = batteryLevel.toString();
+    batteryLevelStr = batteryLevel;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(70),
-        child: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          title: Column(
-            children: [
-              Text('$_batteryState'),
-              Row(
-                children: [
-                  // const Icon(Icons.search, size: 25, color: Colors.black),
-                  SizedBox(
-                    width: 300,
-                    child: Text(
-                      _currentAddress.toString(),
-                      style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        // title: const Text('data'),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(90),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              // mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(
+                  height: 10.0,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      children: [
+                        Row(
+                          children: const [
+                            Text(
+                              'Hey, ',
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: const [
+                            Text(
+                              'Users',
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
+                    const Icon(Icons.notifications_none)
+                  ],
+                ),
+                const SizedBox(
+                  height: 10.0,
+                ),
+                const Text(
+                  'Times Now',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
                   ),
-                  const Icon(Icons.location_on_outlined,
-                      size: 20, color: Colors.black),
-                ],
-              ),
-            ],
+                ),
+                const SizedBox(
+                  height: 10.0,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.access_time,
+                          size: 20,
+                        ),
+                        const SizedBox(
+                          width: 5.0,
+                        ),
+                        Text(
+                          '$_timeString',
+                          style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          '$_tanggal',
+                          style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
+                  ],
+                )
+              ],
+            ),
           ),
-          // actions: const [
-          //   Padding(
-          //     padding: EdgeInsets.all(8.0),
-          //     child: Icon(
-          //       Icons.menu,
-          //       color: Colors.black,
-          //     ),
-          //   )
-          // ],
         ),
       ),
       body: SizedBox(
@@ -202,20 +229,123 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  Row(
-                    children: [
-                      Text('lat : ' '${_currentPosition?.latitude}, '),
-                      Text('long : ' '${_currentPosition?.longitude}'),
-                      Text('Battery: $batteryLevelStr%'),
-                    ],
+                  Container(
+                    width: 350,
+                    height: 100,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                        color: const Color(0xFF6F35A5),
+                        borderRadius: BorderRadius.circular(16)),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(Icons.location_on_outlined,
+                                size: 20, color: Colors.white),
+                            const SizedBox(
+                              width: 5.0,
+                            ),
+                            Text(
+                              _currentAddress.toString(),
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              'lat : ' '${_currentPosition?.latitude ?? ''}, ',
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                            Text(
+                              'long : ' '${_currentPosition?.longitude ?? ''}',
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(
                     height: 20.0,
                   ),
                   Row(
                     children: [
-                      Text('$_tanggal : $_timeString'),
+                      Container(
+                        width: 180,
+                        height: 110,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                            color: const Color(0xFF6F35A5),
+                            borderRadius: BorderRadius.circular(16)),
+                        child: Column(
+                          children: [
+                            const Text('Your Battery Level',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400)),
+                            const SizedBox(
+                              height: 10.0,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                RichText(
+                                    text: TextSpan(
+                                        text: batteryLevelStr.toString(),
+                                        children: const [
+                                          TextSpan(
+                                            text: '%',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                        ],
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 30,
+                                            fontWeight: FontWeight.w600))),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10.0,
+                      ),
+                      SizedBox(
+                        width: 160,
+                        height: 110,
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF6F35A5),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0)),
+                            ),
+                            onPressed: () {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                return const SensorScreen();
+                              }));
+                            },
+                            child: const Text('Snake Game')),
+                      )
                     ],
+                  ),
+                  // const GyroscopeSensor()
+                  const SizedBox(
+                    height: 20.0,
                   ),
                 ],
               ),
@@ -251,10 +381,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 }
-
-
-
-
 
 // import 'package:flutter/material.dart';
 // import 'package:shared_preferences/shared_preferences.dart';

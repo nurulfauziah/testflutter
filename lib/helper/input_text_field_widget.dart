@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'comHelper.dart';
+import '../helper/comHelper.dart';
 
-class getTextFormField extends StatelessWidget {
+class InputTextField extends StatelessWidget {
   TextEditingController? controller;
   String? hintName;
   IconData? icon;
@@ -10,7 +10,7 @@ class getTextFormField extends StatelessWidget {
   TextInputType inputType;
   bool isEnable;
 
-  getTextFormField(
+  InputTextField(
       {this.controller,
       this.hintName,
       this.icon,

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:testflutter/feature/auth/model/user_model.dart';
+import 'package:get/get.dart';
+import 'package:testflutter/feature/auth/controller/login_controller.dart';
 import 'package:testflutter/feature/auth/presentation/login_screen.dart';
-import 'package:testflutter/helper/database_helper.dart';
-import 'package:testflutter/helper/genLoginSignupHeader.dart';
-import 'package:testflutter/helper/getTextFormField.dart';
-import 'package:testflutter/widgets/global_widget.dart';
+import 'package:testflutter/helper/input_text_field_widget.dart';
 
 class SignupForm extends StatefulWidget {
   @override
@@ -12,56 +10,17 @@ class SignupForm extends StatefulWidget {
 }
 
 class _SignupFormState extends State<SignupForm> {
-  final _formKey = GlobalKey<FormState>();
-
-  final _conUserId = TextEditingController();
-  final _conUserName = TextEditingController();
-  final _conEmail = TextEditingController();
-  final _conPassword = TextEditingController();
-  final _conCPassword = TextEditingController();
-  var dbHelper;
-
   @override
   void initState() {
     super.initState();
-    dbHelper = DbHelper();
-  }
-
-  signUp() async {
-    String uid = _conUserId.text;
-    String uname = _conUserName.text;
-    String email = _conEmail.text;
-    String passwd = _conPassword.text;
-    String cpasswd = _conCPassword.text;
-
-    if (_formKey.currentState!.validate()) {
-      if (passwd != cpasswd) {
-        GlobalWidget.showAlertDialog(context, 'Password Mismatch');
-      } else {
-        _formKey.currentState!.save();
-
-        UserModel uModel = UserModel(uid, uname, email, passwd);
-        await dbHelper.saveData(uModel).then((userData) {
-          GlobalWidget.showAlertDialog(context, "Successfully Saved");
-
-          Navigator.push(
-              context, MaterialPageRoute(builder: (_) => LoginForm()));
-        }).catchError((error) {
-          print(error);
-          GlobalWidget.showAlertDialog(context, "Error: Data Save Fail");
-        });
-      }
-    }
   }
 
   @override
   Widget build(BuildContext context) {
+    AuthController c = Get.put(AuthController());
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Login with Signup'),
-      ),
       body: Form(
-        key: _formKey,
+        key: c.formKey,
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Container(
@@ -69,33 +28,52 @@ class _SignupFormState extends State<SignupForm> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  genLoginSignupHeader('Signup'),
-                  getTextFormField(
-                      controller: _conUserId,
+                  Container(
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 50.0),
+                        const Text(
+                          'Sign Up',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                              fontSize: 40.0),
+                        ),
+                        const SizedBox(height: 10.0),
+                        Image.network(
+                          "https://img.freepik.com/free-vector/access-control-system-abstract-concept_335657-3180.jpg?w=1060&t=st=1676445986~exp=1676446586~hmac=3804247f31eefca9909e1c247a852b206871f2ffb6871b68097e8af66d2e5224",
+                          height: 150.0,
+                          width: 150.0,
+                        ),
+                        const SizedBox(height: 10.0),
+                      ],
+                    ),
+                  ),
+                  InputTextField(
+                      controller: c.userIdCtrl,
                       icon: Icons.person,
-                      hintName: 'User ID'),
+                      hintName: 'User Id'),
                   const SizedBox(height: 10.0),
-                  getTextFormField(
-                      controller: _conUserName,
-                      icon: Icons.person_outline,
-                      inputType: TextInputType.name,
-                      hintName: 'User Name'),
+                  InputTextField(
+                      controller: c.usernameCtrl,
+                      icon: Icons.email,
+                      hintName: 'Username'),
                   const SizedBox(height: 10.0),
-                  getTextFormField(
-                      controller: _conEmail,
+                  InputTextField(
+                      controller: c.emailCtrl,
                       icon: Icons.email,
                       inputType: TextInputType.emailAddress,
                       hintName: 'Email'),
                   const SizedBox(height: 10.0),
-                  getTextFormField(
-                    controller: _conPassword,
+                  InputTextField(
+                    controller: c.passwordCtrl,
                     icon: Icons.lock,
                     hintName: 'Password',
                     isObscureText: true,
                   ),
                   const SizedBox(height: 10.0),
-                  getTextFormField(
-                    controller: _conCPassword,
+                  InputTextField(
+                    controller: c.cPasswordCtrl,
                     icon: Icons.lock,
                     hintName: 'Confirm Password',
                     isObscureText: true,
@@ -103,12 +81,18 @@ class _SignupFormState extends State<SignupForm> {
                   Container(
                     margin: const EdgeInsets.all(30.0),
                     width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
+                    height: 40,
+                    // decoration: BoxDecoration(
+                    //   color: Colors.blue,
+                    //   borderRadius: BorderRadius.circular(30.0),
+                    // ),
                     child: ElevatedButton(
-                      onPressed: signUp,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF6F35A5),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0)),
+                      ),
+                      onPressed: c.signUp,
                       child: const Text(
                         'Signup',
                         style: TextStyle(color: Colors.white),
@@ -121,8 +105,13 @@ class _SignupFormState extends State<SignupForm> {
                       children: [
                         const Text('Does you have account? '),
                         ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF6F35A5),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16.0)),
+                          ),
                           // textColor: Colors.blue,
-                          child: const Text('Sign In'),
+                          child: const Text('Login'),
                           onPressed: () {
                             Navigator.pushAndRemoveUntil(
                                 context,

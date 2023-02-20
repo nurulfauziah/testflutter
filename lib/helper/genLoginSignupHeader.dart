@@ -25,14 +25,6 @@ class genLoginSignupHeader extends StatelessWidget {
             width: 150.0,
           ),
           const SizedBox(height: 10.0),
-          const Text(
-            'Sample Code',
-            style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.black38,
-                fontSize: 25.0),
-          ),
-          const SizedBox(height: 10.0),
         ],
       ),
     );

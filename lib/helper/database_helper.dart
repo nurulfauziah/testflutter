@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -34,7 +36,6 @@ class DbHelper {
 
   _onCreate(Database db, int intVersion) async {
     await db.execute("CREATE TABLE $Table_User ("
-        " $C_UserID TEXT, "
         " $C_UserName TEXT, "
         " $C_Email TEXT,"
         " $C_Password TEXT, "
@@ -48,10 +49,12 @@ class DbHelper {
     return res;
   }
 
-  Future<UserModel?> getLoginUser(String userId, String password) async {
+  Future<UserModel?> getLoginUser(String email, String password) async {
+    log(email);
+    log(password);
     var dbClient = await db;
     var res = await dbClient.rawQuery("SELECT * FROM $Table_User WHERE "
-        "$C_UserID = '$userId' AND "
+        "$C_Email = '$email' AND "
         "$C_Password = '$password'");
 
     if (res.isNotEmpty) {
@@ -60,6 +63,18 @@ class DbHelper {
 
     return null;
   }
+  // Future<UserModel?> getLoginUser(String userId, String password) async {
+  //   var dbClient = await db;
+  //   var res = await dbClient.rawQuery("SELECT * FROM $Table_User WHERE "
+  //       "$C_UserID = '$userId' AND "
+  //       "$C_Password = '$password'");
+
+  //   if (res.isNotEmpty) {
+  //     return UserModel.fromMap(res.first);
+  //   }
+
+  //   return null;
+  // }
 
   // Future<int> updateUser(User user) async {
   //   var dbClient = await db;
